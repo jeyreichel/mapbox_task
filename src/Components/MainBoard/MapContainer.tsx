@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import ReactMapGL, { Marker, Popup } from "react-map-gl";
 import mapboxgl from "mapbox-gl";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import { MarkerData, ListProps } from "./types";
 import LayerButton from "./MapContainer/LayerButton";
 import InterestButton from "./MapContainer/InterestButton";
@@ -13,10 +15,54 @@ import ZoomButtons from "./MapContainer/ZoomButtons";
 
 export const MapContainer: React.FC<ListProps> = ({ list }) => {
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const drawControl = useRef<MapboxDraw | null>(null);
   const [hoveredMarker, setHoveredMarker] = useState<MarkerData | null>(null);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [isDraw, setIsDraw] = useState(false);
   const [zoom, setZoom] = useState<number>(12);
+
+  useEffect(() => {
+    drawControl.current = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: { polygon: true, trash: true },
+    });
+  }, []);
+
+  useEffect(() => {
+    if (mapRef.current && drawControl.current) {
+      if (isDraw) {
+        mapRef.current.addControl(drawControl.current);
+        drawControl.current.changeMode("draw_polygon");
+      } else {
+        mapRef.current.removeControl(drawControl.current);
+      }
+    }
+  }, [isDraw]);
+
+  const handleDrawCreate = (e: any) => {
+    const data = e.features[0];
+    if (data && mapRef.current) {
+      const coordinates = data.geometry.coordinates[0];
+      const bounds = coordinates.reduce(
+        (bounds: mapboxgl.LngLatBounds, coord: number[]) =>
+          bounds.extend([coord[0], coord[1]]),
+        new mapboxgl.LngLatBounds(coordinates[0], coordinates[0])
+      );
+
+      mapRef.current.fitBounds(bounds, { padding: 50, duration: 1000 });
+    }
+  };
+
+  useEffect(() => {
+    if (mapRef.current && drawControl.current) {
+      mapRef.current.on("draw.create", handleDrawCreate);
+    }
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.off("draw.create", handleDrawCreate);
+      }
+    };
+  }, [isDraw]);
 
   const handleDrawChange = () => {
     setIsDraw((prev) => !prev);
@@ -78,7 +124,7 @@ export const MapContainer: React.FC<ListProps> = ({ list }) => {
         scrollZoom={true}
         zoom={zoom}
         onZoom={(evt) => setZoom(evt.viewState.zoom)}
-        mapStyle="mapbox://styles/mapbox/streets-v11"
+        mapStyle="mapbox://styles/lystio/cm1erwga302jt01pjh0nxh47n"
         style={{ width: "100%", height: "100%" }}
       >
         {markers.map((marker, index) => (
