@@ -22,7 +22,7 @@ export const SearchList: React.FC<ListProps> = ({ list, isLoading }) => {
 
   useEffect(() => {
     setListLength(list?.length ?? 0);
-  }, [])
+  }, [list])
 
   return (
     <div className="h-[calc(100vh-150px)] overflow-auto">
