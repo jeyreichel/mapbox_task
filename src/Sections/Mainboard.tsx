@@ -35,6 +35,7 @@ const MainBoard: React.FC = () => {
   };
 
   const [list, setList] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const SEARCH_URL = process.env.NEXT_PUBLIC_SEARCH_URL;
@@ -57,6 +58,7 @@ const MainBoard: React.FC = () => {
           ];
         });
         setList(temp);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error submitting data:", error);
@@ -66,7 +68,7 @@ const MainBoard: React.FC = () => {
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 bg-white shadow-md rounded-sm mt-2">
       <MapContainer list={list} />
-      <SearchList list={list} />
+      <SearchList list={list} isLoading={isLoading} />
     </div>
   );
 };

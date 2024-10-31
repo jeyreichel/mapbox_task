@@ -11,4 +11,5 @@ export interface MarkerData {
 
 export interface ListProps {
   list: Array<any> | null;
+  isLoading?: boolean
 }

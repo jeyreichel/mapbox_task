@@ -7,3 +7,8 @@ export interface ButtonProps {
   text: string;
   icon: string;
 }
+
+export interface ZoomButtonsProps {
+  zoomIn: () => void;
+  zoomOut: () => void;
+}

@@ -16,10 +16,14 @@ export const MapContainer: React.FC<ListProps> = ({ list }) => {
   const [hoveredMarker, setHoveredMarker] = useState<MarkerData | null>(null);
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const [isDraw, setIsDraw] = useState(false);
+  const [zoom, setZoom] = useState<number>(12);
 
   const handleDrawChange = () => {
     setIsDraw((prev) => !prev);
   };
+
+  const zoomIn = () => setZoom((prev) => Math.min(prev + 1, 22));
+  const zoomOut = () => setZoom((prev) => Math.max(prev - 1, 0));
 
   useEffect(() => {
     if (list && Array.isArray(list)) {
@@ -62,7 +66,7 @@ export const MapContainer: React.FC<ListProps> = ({ list }) => {
         <Button text="Route planner" icon="/icon/route.svg" />
       </div>
       <div className="absolute right-5 bottom-10 z-10">
-        <ZoomButtons />
+        <ZoomButtons zoomIn={zoomIn} zoomOut={zoomOut} />
       </div>
 
       <ReactMapGL
@@ -72,6 +76,8 @@ export const MapContainer: React.FC<ListProps> = ({ list }) => {
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_KEY}
         dragPan={true}
         scrollZoom={true}
+        zoom={zoom}
+        onZoom={(evt) => setZoom(evt.viewState.zoom)}
         mapStyle="mapbox://styles/mapbox/streets-v11"
         style={{ width: "100%", height: "100%" }}
       >

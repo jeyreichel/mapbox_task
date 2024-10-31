@@ -21,10 +21,10 @@ const Menu: React.FC = () => {
       <MenuButton>
         Price: <span className="opacity-60">€300 - €500</span>
       </MenuButton>
-      <div className="flex items-center space-x-2">
+      <button className="flex items-center space-x-2">
         <span>All</span>
         <img src="/icon/all.svg" alt="" />
-      </div>
+      </button>
     </div>
   );
 };

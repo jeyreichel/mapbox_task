@@ -3,3 +3,8 @@ export interface ArrButtonProps {
   isActive: boolean,
   onClick: () => void
 }
+
+export interface SearchListHeaderProps {
+  onSortToggle: () => void;
+  listLength: number | undefined
+}

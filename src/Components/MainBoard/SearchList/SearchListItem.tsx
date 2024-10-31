@@ -76,7 +76,7 @@ export const SearchListItem: React.FC = (props) => {
         <p className="text-md font-semibold">{data[4]} €</p>
         <div className="flex text-xs space-x-2">
           <span className="opacity-50">Available From: </span>
-          {data[6] !== null && <span>Immediately</span>}
+          {data[6] !== null ? <span>{data[6]}</span> : <span>Not Available</span>}
         </div>
       </div>
     </div>
